@@ -24,6 +24,9 @@ var WIZARD_QUANTITY = 4;
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 
+var SETUP_X = '50%';
+var SETUP_Y = '80px';
+
 // Генерация случайных чисел
 var getRandomElement = function (array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -123,6 +126,8 @@ var closePopup = function () {
   wizardEyes.removeEventListener('click', onWizardEyesClick);
   wizardCoat.removeEventListener('click', onWizardCoatClick);
   fireball.removeEventListener('click', onFireBallClick);
+  setup.style.top = SETUP_Y;
+  setup.style.left = SETUP_X;
 };
 
 var wizards = createWizards(WIZARD_PROPERTIES, WIZARD_QUANTITY);
@@ -159,3 +164,51 @@ setupOpen.addEventListener('keydown', function (evt) {
 });
 
 setup.querySelector('.setup-similar').classList.remove('hidden');
+
+var divElementShop = setup.querySelector('.setup-artifacts-shop');
+var divElementArtifact = setup.querySelector('.setup-artifacts');
+
+var cellsShop = divElementShop.querySelectorAll('.setup-artifacts-cell');
+var cellsArtifacts = divElementArtifact.querySelectorAll('.setup-artifacts-cell');
+
+for (var i = 0; i < cellsShop.length; i++) {
+  cellsShop[i].draggable = true;
+}
+
+for (i = 0; i < cellsArtifacts.length; i++) {
+  cellsArtifacts[i].draggable = true;
+}
+
+var draggedItem = null;
+
+divElementShop.addEventListener('dragstart', function (evt) {
+  if (evt.target.tagName.toLowerCase() === 'img') {
+    draggedItem = evt.target;
+    evt.dataTransfer.setData('text/plain', evt.target.alt);
+    divElementArtifact.style.outline = '2px dashed red';
+  }
+});
+
+divElementArtifact.addEventListener('dragover', function (evt) {
+  evt.preventDefault();
+  return false;
+});
+
+
+divElementArtifact.addEventListener('drop', function (evt) {
+  evt.target.style.backgroundColor = '';
+  divElementArtifact.style.outline = '';
+  evt.target.appendChild(draggedItem);
+  evt.preventDefault();
+});
+
+
+divElementArtifact.addEventListener('dragenter', function (evt) {
+  evt.target.style.backgroundColor = 'yellow';
+  evt.preventDefault();
+});
+
+divElementArtifact.addEventListener('dragleave', function (evt) {
+  evt.target.style.backgroundColor = '';
+  evt.preventDefault();
+});
